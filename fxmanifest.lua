@@ -5,6 +5,8 @@ author 'Gubner'
 description 'Decrypt-o-matic ATM Hacking'
 version '1.0'
 
+dependencies "bt-target"
+
 ui_page 'client/html/index.html'
 
 client_scripts {
