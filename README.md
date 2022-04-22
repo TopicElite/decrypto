@@ -1,60 +1,20 @@
 # decrypto
-ATM Hacking with Minigame for QBCore Framework
+ATM Hacking with Minigame for ESX Framework
 
 Preview: https://tj-s.online/content/GTAV/decrypto.mp4
 
-## Add items to qb-core\shared\items.lua
+## Add items into Database
 
-```lua
-	['stolencard'] 				 		 = {['name'] = 'stolencard', 			    		['label'] = 'Stolen ATM Card', 					['weight'] = 100, 	['type'] = 'item', 		['image'] = 'visacard.png', 				['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,   ['combinable'] = {accept = {'electronickit'}, reward = 'hackcard', anim = {['dict'] = 'anim@amb@business@bgen@bgen_inspecting@', ['lib'] = 'inspecting_low_idle_01_inspector', ['text'] = 'Crafting ATM hacking card', ['timeOut'] = 7500,}},   ['description'] = 'What will you do with someone else\'s ATM card?'},
-	['hackcard'] 				 		 = {['name'] = 'hackcard', 			    		['label'] = 'Hacking Card', 					['weight'] = 100, 	['type'] = 'item', 		['image'] = 'hackcard.png', 				['unique'] = false, 	['useable'] = true, 	['shouldClose'] = false,   ['combinable'] = nil,   ['description'] = 'Modified debit card'},
-	['decryptor'] 				 		 = {['name'] = 'decryptor', 			    		['label'] = 'Decrypt-o-matic', 					['weight'] = 300, 	['type'] = 'item', 		['image'] = 'decryptomatic.png', 				['unique'] = true, 	['useable'] = true, 	['shouldClose'] = false,   ['combinable'] = nil,   ['description'] = 'Decrypt PIN based encryptions'},
+```sql
+INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES 
+('hackcard', 'Hacking Card', '1', '0', '1'), 
+('decryptor', 'Decrypt-o-matic', '1', '0', '1');
 ```
 
-## Add images to qb-inventory\html\images
+## Add images to your inventory
 
 - hackcard.png
 - decryptomatic.png
-
-## Add a shop to qb-shops\config.lua
-
-Add to Config.Products
-
-```lua
-["blackmarket"] = {
-	[1] = {
-		name = 'stolencard',
-		price = 100,
-		amount = 50,
-		info = {},
-		type = 'item',
-		slot = 1,
-	},
-	[2] = {
-		name = 'decryptor',
-		price = 5000,
-		amount = 10,
-		info = {},
-		type = 'item',
-		slot = 2,
-	},
-},
-```
-
-Add to Config.Locations
-
-```lua
--- Black Market Locations
-["backdoor"] = {
-	["label"] = "Back Door",
-	["coords"] = {
-		[1] = vector3(1194.16, 2721.67, 38.81)
-	},
-	["products"] = Config.Products["blackmarket"],
-	["showblip"] = false,
-	["blipsprite"] = 52
-},
-```	
 
 ## The Minigame
 The minigame is based on Matermind
