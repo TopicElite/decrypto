@@ -1,4 +1,4 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local ESX = nil
 local playerPed, playerCoords, Tablet
 local PlayerJob = {}
 local MiniGame ={}
@@ -7,56 +7,63 @@ local NotifyMessage = ''
 local NotifyType = 'primay'
 local Hacked = {}
 
+Citizen.CreateThread(function()
+	while ESX == nil do
+		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		Citizen.Wait(0)
+	end
+end)
 
--- qb-target Exports
+-- bt-target Exports
 
-exports['qb-target']:AddTargetModel(GetHashKey(Config.ATMModels[1]), {
+exports['bt-target']:AddTargetModel(Config.ATMModels, {
 	options = {
 		{
-			type = "client",
 			event = "decrypto:client:starthack",
 			icon = "fa-solid fa-mobile-screen-button",
-			label = "Hack ATM",
+			label = 'Hack ATM',
 		}
 	},
+	job = {"all"},
+	distance = 1.5
+})
+--[[
+exports['bt-target']:AddTargetModel(Config.ATMModels[2], {
+	options = {
+		{
+			event = "decrypto:client:starthack",
+			icon = "fa-solid fa-mobile-screen-button",
+			label = 'Hack ATM',
+		},
+	},
+	job = {"all"},
 	distance = 1.5
 })
 
-exports['qb-target']:AddTargetModel(GetHashKey(Config.ATMModels[2]), {
+exports['bt-target']:AddTargetModel(Config.ATMModels[3], {
 	options = {
 		{
-			type = "client",
 			event = "decrypto:client:starthack",
 			icon = "fa-solid fa-mobile-screen-button",
-			label = "Hack ATM",
-		}
+			label = 'Hack ATM',
+		},
 	},
+	job = {"all"},
 	distance = 1.5
 })
 
-exports['qb-target']:AddTargetModel(GetHashKey(Config.ATMModels[3]), {
+exports['bt-target']:AddTargetModel(Config.ATMModels[4], {
 	options = {
 		{
-			type = "client",
 			event = "decrypto:client:starthack",
 			icon = "fa-solid fa-mobile-screen-button",
-			label = "Hack ATM",
-		}
+			label = 'Hack ATM',
+		},
 	},
+	job = {"all"},
 	distance = 1.5
 })
-
-exports['qb-target']:AddTargetModel(GetHashKey(Config.ATMModels[4]), {
-	options = {
-		{
-			type = "client",
-			event = "decrypto:client:starthack",
-			icon = "fa-solid fa-mobile-screen-button",
-			label = "Hack ATM",
-		}
-	},
-	distance = 1.5
-})
+]]--
 
 
 -- NUI
@@ -91,7 +98,7 @@ RegisterNUICallback('close', function(data, cb)
 		NotifyType = 'error'
 		TriggerServerEvent('police:server:policeAlert', "ATM Suspicious Activity")
 	end
-	QBCore.Functions.Notify(NotifyMessage, NotifyType, 5000)
+	ESX.ShowNotification(NotifyMessage)
 	SetNuiFocus(false, false)
 	ClearPedTasks(PlayerPedId())
 	DeleteObject(tablet)
@@ -115,12 +122,15 @@ function ATMHack()
 	local nearATM = false
 	local hackStarted = false
 	local beenHacked = false
-	QBCore.Functions.TriggerCallback("QBCore:HasItem", function(hasItem)
+	ESX.TriggerServerCallback("decrypto:server:hasitem", function(hasItem)
 		if(hasItem) then
-			for k, v in pairs(Config.ATMModels) do
+			for k, v in pairs(Config.ATMModelsString) do
+				print(v)
 				local hash = GetHashKey(v)
+				print(hash)
 				Citizen.Wait(50)
 				nearATM = IsObjectNearPoint(hash, playerCoords.x, playerCoords.y, playerCoords.z, 1.5)
+				print(nearATM)
 				Citizen.Wait(50)
 				if nearATM then
 					hackStarted = true
@@ -152,16 +162,16 @@ function ATMHack()
 						table.insert(Hacked, ATM)
 						MiniGame.Open()
 					else
-						QBCore.Functions.Notify('Already hacked!', 'error', 3000)
+						ESX.ShowNotification('Already hacked!')
 					end
 				else
-					if not hackStarted and k == #Config.ATMModels then
-						QBCore.Functions.Notify('You cannot do that here.', 'error', 3000)
+					if not hackStarted and k == #Config.ATMModelsString then
+						ESX.ShowNotification('You cannot do that here.')
 					end
 				end
 			end
 		else
-			QBCore.Functions.Notify('You are missing something!', 'error', 3000)
+			ESX.ShowNotification('You are missing something!')
 		end
-	end, {['decryptor'] = 1, ['hackcard'] = 1})
+	end, 'decryptor', 'hackcard')
 end
